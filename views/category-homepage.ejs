@@ -1,0 +1,88 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <h2>
+  <% if (theBook.chapters.length === 0) {%>
+  <a href="/literature/<%= theBook.title %>" class="text-dark">"<%=theBook.title%>"</a>: <%= category%>
+  <% } else { %>
+  <a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a>: <%= category%>
+  <% } %>
+    &nbsp;<a class="far fa-flag" onclick="flagForDeletion(['literature','<%= theBook.title %>','<%= category %>'], '<%= url %>');" title="Flag for Deletion"></a>
+  </h2>
+  <br>
+
+  <form class="" action="/edit/literature/<%= theBook.title %>/<%= category %>" method="post">
+
+    <%- include('partials/text-editor'); -%>
+    <% content.forEach(function(item){ %>
+      <input type="hidden" name="<%= item.title %>" value=""> <!-- we need to UPDATE THIS!!!!!! -->
+      <h4 id="<%= item.title %>"><%= item.title %> &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();" title="Edit"></a> <a class="far fa-flag" onclick="flagForDeletion(['literature', '<%= theBook.title %>', '<%= category %>', '<%= item.title %>'], '<%= url %>');" title="Flag for Deletion"></a></h4>
+      <div class="smaller-br"></div>
+      <div divid="<%= item.title %>" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- item.overview %></div>
+      <% if (category.toLowerCase() === "characters") { %>
+        <div class="editing-only gone">
+          <br>
+          <label for="importance">Importance of the character (on a scale of 0 to 10 - this will determine the order in which the characters are displayed):</label>
+          <input class="form-control small-input" type="number" name="<%= item.title %>105678888887897897543528304importance" value="<%= item.importance %>" required min="0" max="10" step="1">
+          <br>
+        </div>
+      <% } %>
+      <br><hr><br>
+    <% }) %>
+
+  </form>
+
+
+      <h4 id="new">New Section
+        <% if (currentUser) { %>
+          &nbsp;<a class="fas fa-angle-right text-info" id= "toggleButton" onclick="showNewSection();"></a>
+        <% }%>
+      </h4>
+      <div class="smaller-br"></div>
+      <% if (currentUser) { %>
+        <form id="toggled-new-section" class="gone" action="/literature/<%= theBook.title %>/<%= category %>/new" method="post">
+          <input type="text" name="title" value="" class="form-control" id="newSectionTitle" placeholder="Section Title" required>
+          <br>
+          <% if (category.toLowerCase() === "characters") { %>
+            <label for="importance">Importance of the character (on a scale of 0 to 10):</label>
+            <input class="form-control small-input" type="number" name="importance" value="10" required min="0" max="10" step="1">
+            <br>
+          <% } %>
+          <textarea name="text" class="form-control" placeholder="Section text"></textarea><br>
+          <button type="submit" class="btn btn-info">Add section</button>
+        </form>
+      <% } else { %>
+        <button type="button" onclick="showProfile();" class="btn btn-outline-success btn-sm">Log in</button> to create a new section.
+      <% }%>
+
+
+
+</div>
+
+
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  //jshint esversion:6
+  function showNewSection(){
+    $("#toggled-new-section").toggle();
+    const button = $("#toggleButton");
+    if(button.hasClass("fa-angle-right")){
+      button.addClass("fa-angle-down");
+      button.removeClass("fa-angle-right");
+    } else {
+      button.removeClass("fa-angle-down");
+      button.addClass("fa-angle-right");
+    }
+  }
+  $("#newSectionTitle").keypress(function(){
+    setTimeout(function () {
+      $("h4").each(function(){
+        if ($(this).html().split(" &nbsp;")[0].toLowerCase() === $("#newSectionTitle").val().toLowerCase()) {
+          alert("Warning: This title is identical or very similar to an already existing section on this page!");
+        }
+      });
+    }, 2);
+  });
+</script>

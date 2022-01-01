@@ -1,0 +1,56 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <form class="" action="/literature/<%= theBook.title %>/summaries/new" method="post">
+    <h2><a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a>: New Summary Page</h2><br>
+    <p>Choose a location to insert the summary*:</p>
+    <div class="insert-ordered-section">
+      <div class="insert-ordered-section-inside">
+        <% theBook.chapters.forEach(function(chapter){ %>
+            <% if (theBook.chapters.indexOf(chapter) ===0){ %>
+              <button type="button" name="button" class="btn btn-sm btn-outline-dark chapter-btn" value="0"><i class="fas fa-plus"></i></button>
+            <% } %>
+            &nbsp;<%= chapter.title %>&nbsp;
+              <button type="button" name="button" class="btn btn-sm btn-outline-dark chapter-btn" value="<%= theBook.chapters.indexOf(chapter) +1 %>"><i class="fas fa-plus"></i></button>
+        <% }) %>&nbsp;&nbsp;
+      </div>
+    </div>
+    *By clicking a "+" button above, choose where to insert the new summary. For books with chapters, chapters should be in the correct order. For example, if there were summary pages for Chapter 1 and Chapter 3 of a book, you would press the "+" button between them to make Chapter 2.<!--AAGUUMADAAAA-->
+    <br>
+    <div class="smaller-br"></div><hr><br>
+    <p>Summary title**:</p>
+    <input class="form-control" type="text" name="title" placeholder="Chapter 4, &nbsp;Scene 2 Act 3, &nbsp;Epilogue,&nbsp;etc." required pattern="[^/]+">
+    **This is the only written field that is required.
+    <br><div class="smaller-br"></div><hr>
+    <br>
+    <p>Short Summary:</p>
+    <textarea class="form-control" name="shortSummary" rows="3" placeholder="Write a one-paragraph summary of the text this page will be summarizing."></textarea>
+    <br><div class="smaller-br"></div><hr>
+    <br>
+    <p>Simple English Translation:</p>
+    <textarea class="form-control" name="translation" rows="3" placeholder='If you have a copy of the original text, "translate" each paragraph into simpler words. (No plagiarism!)''></textarea>
+    <br><div class="smaller-br"></div><hr>
+    <br>
+    <p>What We Get Out of This:</p>
+    <textarea class="form-control" name="whatWeGet" rows="3" placeholder="What are important things that you find find out from this section of the text? For example, where is the setting? What do we find out about the characters?"></textarea>
+    <br><div class="smaller-br"></div><hr>
+    <br>
+    <p>Things to Note:</p>
+    <textarea class="form-control" name="thingsToNote" rows="3" placeholder="What other things might be important for the reader to know? For example, historical context, foreshadowing, misconceptions readers might have."></textarea>
+    <br><br>
+    <button type="button" onclick="alert('Please select a location.')" name="location" id="locationBtn" class="btn btn-info">Create Summary</button>
+  </form>
+</div>
+
+
+
+<%- include('partials/footer'); -%>
+<script type="text/javascript">
+  $(".chapter-btn").click(function() {
+    $(".chapter-btn").removeClass("active");
+    $(this).addClass("active");
+    $("#locationBtn").attr("type", "submit");
+    $("#locationBtn").removeAttr("onclick");
+    $("#locationBtn").attr("value", $(this).attr("value"));
+  });
+</script>

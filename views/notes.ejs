@@ -1,0 +1,69 @@
+<%- include('partials/header'); -%>
+<% if (url.substring(0,12) === "/literature/"){ %>
+<%- include('partials/lit-sidebar'); -%>
+<% } %>
+
+<div class="padding">
+  <h2><a href="<%= url.substring(0,url.length-16) %>" class="text-dark"><%=topic%></a>: Shared Notes!</h2>
+  <div class="smaller-br"></div>
+  <% if (currentUser) { %>
+  <form class="alert alert-info container-fluid" action="<%= url %>" method="post" enctype="multipart/form-data">
+    <h4>Share your notes!</h4>
+    <div class="smaller-br"></div>
+    <div class="form-group">
+      <p class="text-info">Upload image(s) or PDF file. All types of notes are acceptable!</p>
+      <input type="file" class="form-control-file" id="exampleFormControlFile1" accept="image/*,.pdf" name="notes" multiple required>
+      if you notes have multiple pages, upload them together. If you have multiple sets of notes, upload them one at a time
+    </div>
+    <div class="form-group">
+      <!-- <div class="smaller-br"></div> -->
+      <input class="form-control" name="title" placeholder="Title of your notes (optional)">
+    </div>
+    <div class="form-group">
+      <!-- <div class="smaller-br"></div> -->
+      <textarea class="form-control" name="description" placeholder="Description of your notes (also optional)"></textarea>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-info" onclick="alert('Posting your notes may take a few seconds, but don\'t navigate away from this page!')">Submit Your Notes!</button> &nbsp; *Posting notes and getting likes on notes will help you level
+      up!
+    </div>
+  </form>
+  <% } else { %>
+  <p><a onclick="showProfile()" class="text-info">Log in</a> to upload your own notes!</p>
+  <!---UNDER LEVEL 3 CANNNOT SHARE NOTES!!!! one points are figured out, please fix!!!!!!----->
+  <% }%>
+  <% if (notes && notes.length >0){ %>
+  <div class="row">
+    <% notes.sort((a, b) => (a.score > b.score) ? -1 : 1).forEach(function(note){ %>
+    <% let file = note.url[0]; %>
+    <div class="col-md-6 col-xl-4">
+      <a href="<%= url %>/<%= file.substring(64,file.length) %>" class="text-reset">
+        <div class="alert alert-success">
+          <% if (file.substring(file.length-3, file.length).toLowerCase() === "pdf"){ %>
+          <iframe src="<%= file %>#toolbar=0" class="note-thumbnail note-thumbnail-pdf"></iframe>
+          <% } else { %>
+          <img src="<%= file %>" alt="<%= note.title %>" width="100%" class="note-thumbnail" loading="lazy">
+          <% }%>
+          <% if (note.title) { %>
+            <strong><%= note.title %></strong> -
+          <% }%>
+          Uploaded by <%= note.madeBy %> -
+          <% if (note.url.length ===1) { %>
+          1 file
+          <% }  else { %>
+          <%= note.url.length %> files
+          <% }%>
+        </div>
+      </a>
+    </div>
+
+    <% }); %>
+  </div>
+
+  <!--- sort notes by popularity ----->
+  <% } else { %>
+  <p>Nobody has posted their notes yet. Be the first one to share yours! :)</p>
+  <% }%>
+</div>
+
+<%- include('partials/footer'); -%>

@@ -1,0 +1,70 @@
+<%- include('partials/header'); -%>
+<div class="text-center">
+  <div class="width-40"><br>
+    <h1 class="display-4">Create Account</h1><br>
+    <ul class="text-left">
+      <li>Enter your real email address (we won't share it with anyone or send you stuff)</li>
+      <li>Usernames can include lowercase letters, numbers, periods, and underscores</li>
+      <li>Usernames must be between 5 and 15 characters</li>
+      <li>There are no rules for passwords, except that they have to exist</li>
+    </ul>
+    <form class="" action="/signup" method="post"><br>
+      <div class="form-group">
+        <input type="email" class="form-control" name="email" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" name="username" id="username" placeholder="Username" required maxlength="15">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" name="password" placeholder="Password" required>
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" name="password2" placeholder="Confirm Password" required>
+      </div>
+      <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="agreement" required>
+    <label class="form-check-label" for="agreement">&nbsp;I agree to the privacy policy and terms of use.</label>
+  </div><div class="smaller-br"></div>
+  <div class="form-check">
+    <input type="checkbox" class="form-check-input" id="student">
+    <label class="form-check-label" for="student">&nbsp;I'm a student!</label>
+  </div><br>
+  <div class="form-group" id="hi" style="display: none">
+    <label class="form-check-label" for="grade">What grade are you in? (This will be kept private, but it will help us recommend you topics!)</label><div class="smaller-br"></div>
+    <select class="form-control" name="grade">
+      <option value=0></option>
+      <option value=5>5 or below</option>
+      <option value=6>6</option>
+      <option value=7>7</option>
+      <option value=8>8</option>
+      <option value=9>9</option>
+      <option value=10>10</option>
+      <option value=11>11</option>
+      <option value=12>12</option>
+      <option value=13>Anything higher</option>
+    </select>
+  </div>
+  <br>
+      <button type="submit" class="btn btn-info">Sign Up</button>
+    </form><br>
+    <p>Already have an account? <a href="/login">Log in</a>!</p>
+  </div>
+</div>
+
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  $("#username").keypress(function(event){
+    let value = $("#username").val();
+    if (!["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "_"].includes(event.key)){
+      alert("Usernames can only include lowercase letters, numbers, periods, and underscores");
+      setTimeout(function () {
+        $("#username").val(value);
+      }, 5);
+    }
+  });
+  $('#student').click(function() {
+    $("#hi").toggle(this.checked);
+});
+</script>

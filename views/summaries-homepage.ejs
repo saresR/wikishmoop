@@ -1,0 +1,58 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <h2><a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a> Chapter Summaries</h2>
+  <br>
+  <form class="" action="/edit/literature/<%= theBook.title %>/synopsis" method="post">
+    <h4>Synopsis &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <input type="hidden" name="synopsis" value="<%= theBook.synopsis %>">
+    <div id="synopsis" divid="synopsis" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- theBook.synopsis %></div>
+    <%- include('partials/text-editor'); -%>
+    <br>
+  </form>
+
+  <div class="row">
+
+
+  <% theBook.chapters.forEach(function(chapter){ %>
+    <div class="col-md-6 col-lg-4 col-xl-3">
+      <div class="card margin-bottom">
+        <a href="/literature/<%= theBook.title %>/summaries/<%= chapter.title %>" class="text-info">
+        <div class="card-header">
+          <strong><%= chapter.title %></strong>
+        </div>
+        <% if (chapter.shortSummary && chapter.shortSummary.length >1) { %>
+          <div class="card-body text-dark">
+            <%= chapter.shortSummary.substring(0,130) %>...
+          </div>
+        <%} else { %>
+          <div class="card-body text-dark">
+            This chapter does not have a short summary yet.<br><br><span class="text-primary">Try writing one yourself!</span>
+          </div>
+        <% }%>
+        </a>
+      </div>
+    </div>
+  <% }); %>
+  <% if (currentUser){ %>
+    <div class="col-md-6 col-lg-4 col-xl-3">
+      <div class="card margin-bottom">
+        <a href="/<%= theBook.title %>/summaries/new" class="text-info">
+        <div class="card-header">
+          <strong>New summary</strong>
+        </div>
+          <div class="card-body text-dark">
+            <h1 class="text-center display-3"><a href="/literature/<%=theBook.title%>/summaries/new" class="text-success"><i class="fas fa-plus-circle"></i></a></h1>
+          </div>
+        </a>
+      </div>
+    </div>
+  <% } %>
+
+
+  </div>
+</div>
+
+
+
+  <%- include('partials/footer'); -%>

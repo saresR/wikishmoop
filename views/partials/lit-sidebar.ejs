@@ -1,0 +1,69 @@
+<a onclick="showSidebar();">
+  <div class="position-fixed" id="sidebar-toggler">
+    <i class="fas fa-chevron-right"></i>
+  </div>
+</a>
+<div class="padding text-light sidebar-hidden" id="sidebar">
+  <div class="text-right">
+    <a onclick="hideSidebar();" class="text-light"><i class="fas fa-times"></i></a>
+  </div>
+  <h5><a class="text-light" href="/literature/<%= theBook.title %>"><%= theBook.title %></a></h5>
+  <% if (theBook.chapters && theBook.chapters.length > 0) { %>
+    <br>
+    <a class="text-success" href="/literature/<%= theBook.title %>/Summaries"><strong>Summaries</strong></a><br>
+
+    <% for (let i = 0; i < theBook.chapters.length; i++) { %>
+        <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/summaries/<%= theBook.chapters[i].title %>"><%= theBook.chapters[i].title %></a>
+    <% } %>
+
+    <% if (currentUser) { %> <!---- LATER check the score - only approved users can create new sections ---->
+      <div class="smaller-br"></div>
+      <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/summaries/new"><i class="fas fa-plus-circle"></i> New</a>
+    <% } %>
+  <%} %>
+
+  <% const sidebarWidgets = [] %>
+      <% theBook.sections.forEach(function(category){ %>
+        <% sidebarWidgets.push([category.subpages, category.title]); %>
+      <% }) %>
+      <%sidebarWidgets.sort((a, b) => (a.order > b.order) ? -1:1).forEach(function(widget){ %>
+        <% if (widget[0] && widget[0].length > 0) { %>
+          <br>
+          <a class="text-success" href="/literature/<%= theBook.title %>/<%= widget[1] %>"><strong><%= widget[1] %></strong></a><br>
+
+          <% for (let i = 0; i < widget[0].length; i++) { %>
+              <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/<%= widget[1] %>#<%= widget[0][i].title %>"><%= widget[0][i].title %></a>
+          <% } %>
+
+          <% if (currentUser) { %>
+            <div class="smaller-br"></div>
+            <% if (widget[1] ==="Quizzes") { %>
+              <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/quizzes/new"><i class="fas fa-plus-circle"></i> New</a>
+            <% } else { %>
+              <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/<%= widget[1] %>#new"><i class="fas fa-plus-circle"></i> New</a>
+            <% } %>
+          <% } %>
+
+        <%} %>
+      <% }) %>
+      <br>
+      <a class="text-success" href="/literature/<%= theBook.title %>/community"><strong>Community</strong></a><br>
+      <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/community/q&a">Q&A</a> <!---- WE MAY CHANGE THIS!!!  (share notes, maybe?) -->
+      <a class="text-light margin-left d-block text-smaller" href="/literature/<%= theBook.title %>/community/notes">Community Notes</a><br>
+      <% if (currentUser) { %>
+      <a class="text-success" href="/literature/<%= theBook.title %>/new-page"><strong>New Page</strong></a><br>
+      <% } %>
+<br><br>
+<button type="button" name="button" class="btn btn-sm btn-outline-light" onclick="hideSidebar();">Close Sidebar &nbsp;<i class="fas fa-times"></i></button>
+<br><br><br><br>
+</div>
+<script type="text/javascript">
+  function showSidebar() {
+    document.getElementById("sidebar").classList.remove("sidebar-hidden");
+    document.getElementById("sidebar").classList.add("sidebar-shown");
+  }
+  function hideSidebar(){
+    document.getElementById("sidebar").classList.add("sidebar-hidden");
+    document.getElementById("sidebar").classList.remove("sidebar-shown");
+  }
+</script>

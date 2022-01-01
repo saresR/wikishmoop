@@ -1,0 +1,77 @@
+<%- include('partials/header'); -%>
+<% if (url.substring(0,12) === "/literature/"){ %>
+  <%- include('partials/lit-sidebar'); -%>
+<% } %>
+
+<div class="padding">
+  <h2><a href="<%= url.substring(0,url.length-14) %>" class="text-dark"><%=topic%></a>: Q&A</h2>
+  <div class="smaller-br"></div>
+  <div class="alert alert-info">
+    <form action="<%= url %>" method="post">
+      <h4>Ask a question!</h4>
+      <div class="smaller-br"></div>
+      <div class="form-group">
+        <input type="text" name="question" placeholder="Your question" class="form-control" required pattern="[^/]+">
+      </div>
+      <% if (!currentUser){ %>
+        <div class="form-group">
+        <input type="email" name="email" class="form-control" placeholder="Your email (optional)">
+        </div>
+      <% } %>
+      <button type="button" class="btn btn-outline-info btn-sm" onclick="confirmSubmit();">Submit question</button> &nbsp; &nbsp; <input type="checkbox" name="notify" value="yes">&nbsp; <label class="form-check-label" for="notify">Notify me (by email) when someone answers my question!</label>
+      <button type="submit" class="gone" id="realSubmit"></button>
+      <div class="smaller-br"></div>
+    </form>
+  </div>
+
+
+<br>
+  <% if (questions && questions.length > 0) { %>
+    <% questions.reverse().forEach(function(question){ %>
+      <div class="alert alert-success">
+        <h4><a href="<%= url %>/<%= question.question %>" class="text-success"><span class="question-heading"><%= question.question %></span> &nbsp;</a><a class="far fa-flag" onclick="flagForDeletion([<%= '"' + url.substring(1, url.length).replace(new RegExp("/", "g"), '","') + '","' + question.question + '"' %>], '<%= url %>');" title="Flag for Deletion"></a></h4>
+        <% if (question.askedBy ==="Anonymous") { %>
+          Asked by <%= question.askedBy %>
+        <% } else { %>
+          Asked by <a href="/user/<%= question.askedBy %>"><%= question.askedBy %></a>
+        <% } %>
+
+      <% if (questions.length <=5) { %>
+        <% if (question.answers && question.answers.length >0) { %>
+          <% question.answers.sort((a, b) => (b.score > a.score) ? 1 : -1).forEach(function(answer){%>
+            <%if (question.answers.sort((a, b) => (b.score > a.score) ? 1 : -1).indexOf(answer) < 5) { %>
+              <br><strong><%= answer.answeredBy %> says:</strong> <%= answer.answer %><!--- we need to figure out the layout here!!!!!!!! - maybe put an alert? -->
+            <% } %>
+          <% });  %>
+        <% } else { %>
+          - No answers yet! <!---  also, for 12+ questions we can have a little "search" helper that counts the most common words excluding question words and by clicking on the buttons you can filter the questions that have that word --->
+        <% }%>
+      <% } %>
+
+
+      <div class="smaller-br"></div>
+      <button type="button" onclick="window.location.href='<%= url %>/<%= question.question %>';" class="btn btn-sm btn-outline-success">Answer this question &nbsp; | &nbsp; View All <%= question.answers.length %> Answers</button>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No questions yet. Be the first one to ask a question on <%= topic %>!</p>
+  <% } %>
+
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  function confirmSubmit(){
+    const existingQuestions = [];
+    $(".question-heading").each(function(){
+      existingQuestions.push($(this).html().toLowerCase());
+    });
+
+    if (existingQuestions.includes($("input[name='question']").val().toLowerCase())){
+      alert("Someone has already asked that question! Look over the questions to make sure you don't repeat one!");
+    } else {
+      $("#realSubmit").click();
+    }
+  }
+</script>

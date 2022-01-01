@@ -1,0 +1,121 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+
+
+
+
+<div class="padding">
+  <% if (theBook.chapters.length === 0) {%>
+  <h2>"<%=theBook.title%>" by <%=theBook.author%></h2>
+  <% } else { %>
+  <h2><u><%=theBook.title%></u> by <%=theBook.author%></h2>
+
+  <% }%>
+  <br>
+  <form class="" action="/edit/literature/<%= theBook.title %>/synopsis" method="post">
+    <h4>Synopsis &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <input type="hidden" name="synopsis" value="<%= theBook.synopsis %>">
+    <div id="synopsis" divid="synopsis" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- theBook.synopsis %></div>
+    <%- include('partials/text-editor'); -%>
+    <br>
+  </form>
+
+
+  <% if (theBook.cover) {%>
+  <div class="container-fluid row">
+    <img src="<%= theBook.cover %>" alt="<%= theBook.title %> cover" class="book-cover col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+    <%} else {%>
+      <% if (currentUser){ %>
+        <div class="container-fluid">
+            <div class="alert alert-dark margin-bottom">
+              <i class="fas fa-plus-circle"></i> &nbsp; Add cover image from web &nbsp;
+              <form class="inline" action="/book-cover" method="post">
+                <input class="form-control inline-50-input" type="text" name="cover" placeholder="Paste image url here" required>
+                <button type="submit" name="bookTitle" value="<%= theBook.title %>" class="btn btn-sm btn-dark">Submit</button>
+              </form>
+            </div>
+            </div>
+
+      <% } %>
+      <div class="container-fluid row">
+      <%} %>
+      <% if (theBook.chapters.length > 1) { %>
+        <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+          <div class="card">
+            <div class="card-header">
+              <a href="<%= url %>/summaries" class="color-inherit"><p class="no-margin text-medium">Summaries</p></a>
+            </div>
+            <ul class="list-group list-group-flush">
+            <% for (let i = 0; i < 3; i++) { %>
+              <% if (theBook.chapters[i]){ %>
+                <li class="list-group-item"><a href="/literature/<%= theBook.title %>/summaries/<%= theBook.chapters[i].title %>"><%= theBook.chapters[i].title %></a></li>
+              <% }%>
+            <% } %>
+            <li class="list-group-item"><a href="/literature/<%= theBook.title %>/summaries" class="text-info"><strong>All Summaries</strong></a></li>
+            </ul>
+          </div>
+        </div>
+      <%} %>
+
+      <% const widgets = [] %>
+      <% theBook.sections.forEach(function(category){ %>
+        <% widgets.push([category.subpages, category.title]); %>
+      <% }) %>
+      <%widgets.sort((a, b) => (a.order > b.order) ? -1:1).forEach(function(widget){ %>
+        <% if (widget[0] && widget[0].length > 0) { %>
+          <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+            <div class="card">
+              <div class="card-header">
+                <a href="/literature/<%= theBook.title %>/<%= widget[1] %>" class="color-inherit"><p class="no-margin text-medium"><%= widget[1] %></p></a>
+              </div>
+              <ul class="list-group list-group-flush">
+              <% for (let i = 0; i < 3; i++) { %>
+                <% if (widget[0][i] && widget[0][i].title.length <15){ %>
+                  <li class="list-group-item"><a href="/literature/<%= theBook.title %>/<%= widget[1] %>#<%= widget[0][i].title %>"><%= widget[0][i].title %></a></li>
+                <% } else if (widget[0][i]){ %>
+                  <li class="list-group-item"><a href="/literature/<%= theBook.title %>/<%= widget[1] %>#<%= widget[0][i].title %>"><%= widget[0][i].title.substring(0,11) %>...</a></li>
+                <% }%>
+              <% } %>
+              <li class="list-group-item"><a href="/literature/<%= theBook.title %>/<%= widget[1] %>" class="text-info"><strong>All <%= widget[1] %></strong></a></li>
+              </ul>
+            </div>
+          </div>
+        <%} %>
+      <% }); %>
+      <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+        <div class="card">
+          <div class="card-header">
+            <a href="<%= url %>/community" class="color-inherit"><p class="no-margin text-medium">Community</p></a>
+          </div>
+          <ul class="list-group list-group-flush">
+              <li class="list-group-item"><a href="<%= url %>/community/q&a">Q&A</a></li>
+              <li class="list-group-item"><a href="<%= url %>/community/notes">Community Notes</a></li>
+          </ul>
+        </div>
+      </div>
+      <% if (currentUser){ %>
+        <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+          <div class="card">
+            <div class="card-header">
+              <p class="no-margin text-medium">Add new page</p>
+            </div><br>
+            <h1 class="text-center display-3"><a href="/literature/<%=theBook.title%>/new-page" class="text-success"><i class="fas fa-plus-circle"></i></a></h1><br>
+          </div>
+        </div>
+      <% } %>
+  </div>
+
+    <br>
+    ***at the bottom
+    <br>
+    <strong>Last updated </strong><%= new Date(theBook.lastEdited * 1000); %><br>
+    <strong>Contributors:</strong>
+    <% theBook.contributors.forEach(function(person){ %>
+    <a href="/user/<%= person %>"><%= person %></a>,
+    <% }) %>
+
+
+
+  </div>
+
+  <%- include('partials/footer'); -%>

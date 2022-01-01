@@ -1,0 +1,60 @@
+<%- include('partials/header'); -%>
+<div class="padding">
+  <h1>New book (or play, or something else...)</h1><br>
+  <p>
+    Can this work be divided into sections? (For example, chapters, scenes, parts.)</p>
+  <div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-outline-dark long-btn">Yes</button>
+    <button type="button" class="btn btn-outline-dark">No</button>
+    &nbsp; &nbsp; (required)
+  </div>
+
+
+  <form class="" action="/literature-new" method="post"><br>
+    <div class="row">
+      <div class="col-md-6 margin-bottom">
+        <input type="text" class="form-control" placeholder="Title (required) - please double check for spelling errors!" name="title" required pattern="[^/]+">
+      </div>
+      <div class="col-md-6 margin-bottom">
+        <input type="text" class="form-control" placeholder="Author (required)" name="author" required>
+      </div>
+    </div>
+<div class="smaller-br"></div>
+<div class="gone disappear-for-short-works">
+  <p>Name 2 chapters/sections (You can go back to add more sections later) </p>
+  <input type="text" class="form-control long-work-input" placeholder="Ex: Prologue, Chapter 1" name="chapter1" pattern="[^/]+">
+  <div class="smaller-br"></div>
+  <input type="text" class="form-control long-work-input" placeholder="Ex: Act 1 Scene 2" name="chapter2" pattern="[^/]+">
+  <br>
+</div>
+    <button type="button" onclick="confirmSubmit();" class="btn btn-info" name="length" id="length">Done</button>
+  </form>
+
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  $(".btn-outline-dark").click(function() {
+    $(".btn-outline-dark").removeClass("active");
+    $(this).addClass("active");
+    $("#length").attr("type", "submit");
+    $("#length").removeAttr("onclick");
+    if ($(this).hasClass("long-btn")) {
+      $(".disappear-for-short-works").show();
+      $(".long-work-input").attr("required", "");
+      $("#length").attr("value", "long");
+    } else {
+      $(".disappear-for-short-works").hide();
+      $(".long-work-input").removeAttr("required");
+      $("#length").attr("value", "short");
+    }
+  });
+  function confirmSubmit(){
+    if ($("#real-submit").attr("value") === "long" || $("#real-submit").attr("value") === "short") {
+      $("#real-submit").click();
+    } else {
+      alert("You must select a category.");
+    }
+  }
+</script>

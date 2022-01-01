@@ -1,0 +1,89 @@
+<%- include('partials/header'); -%>
+<% if (url.substring(0,12) === "/literature/"){ %>
+<%- include('partials/lit-sidebar'); -%>
+<% } %>
+
+<div class="padding">
+  <a href="<%= url.substring(0, url.length-45) %>"><i class="fas fa-chevron-left"></i> &nbsp;Back to all <%= topic %> notes</a>
+<div class="smaller-br"></div>
+  <h2><a href="<%= url.substring(0,url.length-61) %>" class="text-dark"><%=topic%></a>:
+<% if (note.title){ %>
+  <%= note.title %>
+<% } else { %>
+  Notes
+<% }%>
+<% if (note.likedBy.includes(currentUser.username)) { %>
+  &nbsp;<a class="fas fa-heart" onclick="unlikeNote();"></a>
+<% } else { %>
+  &nbsp;<a class="far fa-heart" onclick="likeNote();"></a>
+<% } %>
+
+<% if (note.reportedBy.includes(currentUser.username)) { %>
+  &nbsp;<a class="fas fa-flag" onclick="alert('You have already flagged this note for review.')" title="Flag"></a>
+<% } else { %>
+  &nbsp;<a class="far fa-flag" onclick="flagForDeletion([<%= '"' + url.substring(1, url.length).replace(new RegExp("/", "g"), '","') + '"' %>], '<%= url.substring(0, url.length-45) %>');" title="Flag for Deletion"></a>
+<% } %>
+
+  </h2>
+  <div class="smaller-br"></div>
+
+
+
+<% note.url.forEach(function (url){ %>
+  <% if (url.substring(url.length-3, url.length).toLowerCase() === "pdf"){ %>
+  <iframe src="<%= url %>" class="note"></iframe>
+  <% } else { %>
+  <img src="<%= url %>" alt="<%= note.title %>" width="100%" class="" loading="lazy">
+  <% }%>
+<% }); %>
+<% if (note.description) { %>
+  <p><b>Description:</b> <%= note.description %></p>
+<% } %>
+
+<p>
+  <b>Tags:</b>
+
+  <% if (note.tags && note.tags.length > 0){ %>
+    <% note.tags.forEach(function(tag){ %>
+      <button type="button" class="btn btn-sm btn-info"><%= tag %></button>
+    <% }); %>
+  <% } %>
+
+</p>
+
+<br>
+
+  <% if (notes && notes.length >0){ %>
+  <div class="row">
+    <% notes.sort((a, b) => (a.score > b.score) ? -1 : 1).forEach(function(note){ %>
+    <% let file = note.url[0]; %>
+    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+      <a href="<%= url.substring(0, url.length-45) %>/<%= file.substring(64,file.length) %>" class="text-reset">
+        <div class="alert alert-success">
+          <% if (file.substring(file.length-3, file.length).toLowerCase() === "pdf"){ %>
+          <iframe src="<%= file %>#toolbar=0" class="note-thumbnail-small note-thumbnail-pdf"></iframe>
+          <% } else { %>
+          <img src="<%= file %>" alt="<%= note.title %>" width="100%" class="note-thumbnail-small" loading="lazy">
+          <% }%>
+          <% if (note.url.length ===1) { %>
+          1 file
+          <% }  else { %>
+          <%= note.url.length %> files
+          <% }%>
+        </div>
+      </a>
+    </div>
+
+    <% }); %>
+  </div>
+
+
+
+
+  <% } else { %>
+  <p>Nobody has posted their notes yet. Be the first one to share yours! :)</p>
+  <% }%>
+</div>
+
+
+<%- include('partials/footer'); -%>

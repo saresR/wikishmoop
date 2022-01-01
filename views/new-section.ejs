@@ -1,0 +1,64 @@
+<%- include('partials/header'); -%>
+<%- include('partials/group-sidebar'); -%>
+
+WE NEED TO FIGURE THIS ALL OUT <br>
+
+
+<div class="padding">
+  <h2><a href="/<%= group.subject %>/<%= group.title %>"><%= group.title %></a></h2>
+  <br>
+  <form class="" action="/edit/<%= group.subject %>/<%= group.title %>/description" method="post">
+    <h4>Description &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <input type="hidden" name="description" value="<%= group.description %>">
+    <div id="description" divid="description" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- group.description %></div>
+    <%- include('partials/text-editor'); -%>
+    <br>
+  </form>
+
+
+      <%group.sections.forEach(function(section){ %>
+          <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+            <div class="card">
+              <div class="card-header">
+                <p class="no-margin text-medium"><%= section.title %></p>
+              </div>
+              <ul class="list-group list-group-flush">
+              <% for (let i = 0; i < 3; i++) { %>
+                <% if (section.articles[i] && section.articles[i].length <15){ %>
+                  <li class="list-group-item"><a href="#"><%= section.articles[i] %></a></li>
+                <% } else if (section.articles[i]){ %>
+                  <li class="list-group-item"><a href="#"><%= section.articles[i].substring(0,11) %>...</a></li>
+                <% }%>
+              <% } %>
+              <!-- <li class="list-group-item"><a href="/literature/ theBook.title/widget[1]" class="text-info"><strong>All widget[1]</strong></a></li> -->
+              </ul>
+            </div>
+          </div>
+      <% }) %>
+      <% if (currentUser){ %>
+        <div class=" col-sm-6 col-md-4 col-lg-3 col-xl-2 margin-bottom">
+          <div class="card">
+            <div class="card-header">
+              <p class="no-margin text-medium">Add new section</p>
+            </div><br>
+            <h1 class="text-center display-3"><a href="/<%= group.subject %>/<%= group.title %>/new-section" class="text-success"><i class="fas fa-plus-circle"></i></a></h1><br>
+          </div>
+        </div>
+      <% } %>
+      <br>
+      ***at the bottom
+      <br>
+      <strong>Last updated </strong><%= new Date(group.lastEdited * 1000); %><br>
+      <strong>Contributors:</strong>
+      <% group.contributors.forEach(function(person){ %>
+      <a href="/user/<%= person %>"><%= person %></a>,
+      <% }) %>
+  </div>
+
+
+
+
+
+
+
+  <%- include('partials/footer'); -%>

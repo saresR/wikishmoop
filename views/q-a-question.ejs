@@ -1,0 +1,50 @@
+<%- include('partials/header'); -%>
+<% if (url.substring(0,12) === "/literature/"){ %>
+<%- include('partials/lit-sidebar'); -%>
+<% } %>
+
+<div class="padding">
+  <a href="<%= url.substring(0, url.length-question.question.length) %>"><i class="fas fa-chevron-left"></i> &nbsp;Back to Q&A</a>
+<div class="smaller-br"></div>
+  <h2><a href="<%= url.substring(0,url.length-(15+ question.question.length)) %>" class="text-dark"><%=topic%></a>: <%= question.question %></h2>
+  <div class="smaller-br"></div>
+  <form class="alert alert-info" action="<%= url %>" method="post">
+    <h4>Answer this question!</h4>
+    <div class="smaller-br"></div>
+    <div class="form-group">
+      <textarea type="text" name="answer" placeholder="Your answer" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-outline-info btn-sm">Submit answer</button>  &nbsp;&nbsp; *Irrelevant/inappropriate answers will be deleted.
+  </form>
+<br>
+  <% question.answers.sort((a, b) => (b.score > a.score) ? 1 : -1).forEach(function(answer){%>
+  <div class=" alert alert-success">
+    <p> <!-- like button does not work yet :)---->
+      <%= answer.answer %>
+
+      <% if (answer.likedBy.includes(currentUser.username)) { %>
+        &nbsp;<a class="fas fa-heart" onclick="unlikeNote();"></a>
+      <% } else { %>
+        &nbsp;<a class="far fa-heart" onclick="likeNote();"></a>
+      <% } %>
+
+      <% if (answer.reportedBy.includes(currentUser.username)) { %>
+        &nbsp;<a class="fas fa-flag" onclick="alert('You have already flagged this note for review.')" title="Flag"></a>
+      <% } else { %>
+        &nbsp;<a class="far fa-flag" onclick="flagForDeletion([<%= '"' + url.substring(1, url.length).replace(new RegExp("/", "g"), '","') + '"' %>], '<%= url.substring(0, url.length-45) %>');" title="Flag for Deletion"></a>
+      <% } %>
+
+        </p>
+    <% if (answer.answeredBy ==="Anonymous") { %>
+      — Anonymous
+    <% } else { %>
+      — <a href="/user/<%= answer.answeredBy %>" class="text-info"><%= answer.answeredBy %></a>
+    <% } %>
+  </div>
+  <% });  %>
+</div>
+
+
+
+
+<%- include('partials/footer'); -%>

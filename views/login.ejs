@@ -1,0 +1,19 @@
+<%- include('partials/header'); -%>
+<div class="text-center">
+  <div class="align-middle width-40-absolute">
+    <h1 class="display-4">Log In</h1>
+    <form class="" action="/login" method="post"><br>
+      <div class="form-group">
+        <input type="text" class="form-control" name="username" placeholder="Username">
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" name="password" placeholder="Password"><br>
+        <label for="password"><a href="/forgot password">Forgot password? (coming soon)</a></label>
+        <!-- AAGUUMADAAAA COMING SOON -->
+      </div>
+      <button type="submit" class="btn btn-info" name="url" value="/">Log In</button>
+    </form><br>
+    <p>Don't have an account? <a href="/signup">Join today</a> for free!</p>
+  </div>
+</div>
+<%- include('partials/footer'); -%>

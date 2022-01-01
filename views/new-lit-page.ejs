@@ -1,0 +1,118 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <% if (theBook.chapters.length === 0) {%>
+  <h2><a href="/literature/<%= theBook.title %>" class="text-dark">"<%=theBook.title%>"</a>: New Page</h2>
+  <% } else { %>
+  <h2><a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a>: New Page</h2>
+  <% } %>
+  <br>
+  <form class="" action="/literature/<%= theBook.title %>/new-page" method="post">
+    <h4>Page Title (choose one): &nbsp;<a class="far fa-question-circle text-success" onclick="alert('Choose the title/topic for the new page by clicking a button blow. You cannot create a second page on an already existing topic.');"></a></h4>
+    <div class="smaller-br"></div>
+    <% const existingWidgets = []; %>
+
+    <% const suggested = ["Characters", "Themes", "Symbols", "Quotes", "Essay Prep", "Miscellaneous"]; %>
+    <% theBook.sections.forEach(function(category){ %>
+      <% existingWidgets.push(category.title); %>
+    <% }) %>
+    <% suggested.forEach(function(page){ %>
+    <% if (!existingWidgets.includes(page)){ %>
+    <button type="button" name="button" class="btn btn-sm btn-info margin-bottom"><%= page %></button>
+    <% } %>
+    <% }) %>
+    <div class="btn btn-sm btn-info margin-bottom" id="other-button">Other: <input type="text" id="other-name" class="white-line-input" pattern="[^/]+"></div>
+    <br>
+    Existing pages:
+    <% existingWidgets.forEach(function(existingWidget){ %>
+      <span class="already-existing"><%= existingWidget %></span>,
+    <% }) %>
+    <span class="already-existing">Community</span>
+    <hr>
+    <div class="smaller-br"></div>
+    <h4>Create a section on your new page! &nbsp;<a class="far fa-question-circle text-success" onclick="alert('Each page is divided into sections. For example, a page titled \'Characters\' would have different sections about different characters in the book.');"></a></h4>
+    <br>
+    <input type="text" name="sectionTitle" value="" class="form-control" placeholder="Section title" required>
+    <div class="gone" id="importance">
+      <br>
+      <label for="importance">How important is this character on a scale of 0 to 10?</label>
+      <input class="form-control small-input d-inline" type="number" name="importance" value="10" required min="0" max="10" step="1" required>
+    </div>
+    <br>
+    <textarea name="sectionText" class="form-control" placeholder="Section text..."></textarea><br>
+
+
+    <button type="button" class="btn btn-outline-success" onclick="confirmSubmit();">Create Page!</button>
+    <button type="submit" name="pageName" value="" class="gone" id="submitButton"></button>
+  </form>
+</div>
+
+<% theBook.sections.forEach(function(extraSection){ %>
+<hello></hello>
+<% }) %>
+
+
+
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  $(".btn-info").click(function() {
+    if (!$(this).hasClass("disabled")) {
+      $(".btn-info").removeClass("active");
+      $(this).addClass("active");
+      if ($(this).html()==="Characters") {
+        $("#importance").removeClass("gone");
+      } else if (!$("#importance").hasClass("gone")){
+        $("#importance").addClass("gone");
+      }
+      if ($(this).attr("id") !=="other-button") {
+        $("#submitButton").val($(this).html());
+      } else {
+        $("#submitButton").val($("#other-name").html());
+      }
+    }
+  });
+
+  $("#other-name").keydown(function(){
+    const hi = $(this);
+    setTimeout(function () {
+      $("#submitButton").val(hi.val());
+      $(".btn-info").each(function(){
+        if ($(this).html().toLowerCase() === hi.val().toLowerCase()) {
+          $(this).click();
+        }
+      });
+    }, 0);
+  });
+
+  $("#other-button").click(function(){
+    const hi = $("#other-name");
+    setTimeout(function () {
+      $("#submitButton").val(hi.val());
+      console.log(hi.val());
+      $(".btn-info").each(function(){
+        if ($(this).html().toLowerCase() === hi.val().toLowerCase()) {
+          $(this).click();
+        }
+      });
+    }, 0);
+  });
+
+  function confirmSubmit() {
+    if ($("#submitButton").val()) {
+      const array = [];
+      $(".already-existing").each(function(){
+        array.push($(this).html().toLowerCase());
+      });
+      if (array.includes($("#submitButton").val().toLowerCase())) {
+        alert("An page with that name or a very similar name already exists!");
+        return false;
+      } else {
+        $("#submitButton").click();
+      }
+    } else {
+      alert("Please select a name for the page!");
+    }
+  }
+</script>

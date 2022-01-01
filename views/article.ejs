@@ -1,0 +1,155 @@
+<%- include('partials/header'); -%>
+<%- include('partials/group-sidebar'); -%>
+
+<% let prevPage; %>
+<% let nextPage; %>
+<%# we need to figure these buttons out based on the group sidebar %>
+
+<%# there should be a way to add IMAGES to articles!!!!!!!! %>
+
+<div class="padding">
+  <div class="position-relative">
+    <a href="/<%= group.subject %>/<%= group.title %>" class="text-left absolute-left"><i class="fas fa-chevron-left"></i> &nbsp; previous page </a>
+    <a href="/<%= group.subject %>/<%= group.title %>" class="text-right absolute-right">next page &nbsp; <i class="fas fa-chevron-right"></i></a>
+  </div>
+  <br>
+  <div class="smaller-br"></div>
+  <h2><%= article.title %></h2>
+  <a href="/<%= group.subject %>/<%= group.title %>">Back to <strong><%= group.title %></strong></a>
+  <br>
+  <form class="" action="/edit/<%= article._id %>" method="post">
+    <%- include('partials/text-editor'); -%>
+    <br>
+    <input type="hidden" name="overview" value="<%= article.overview%>">
+    <div divid="overview" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%= article.overview %></div>
+    <br>
+    <button type="button" class="btn btn-outline-dark editing-only gone margin-bottom margin-top"><strong>Rearrange sections</strong></button> <!--- make this work somehow --->
+    <% article.sections.sort((a, b) => (a.order > b.order) ? 1:-1).forEach(function(section){ %>
+      <!-- we need to take int account if it's a quiz or not -->
+      <input type="hidden" name="<%= section.title %>" value="<%= section.text%>">
+      <hr><br>
+      <h4 id="<%= section.title %>"><%= section.title %> &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+      <div class="smaller-br"></div>
+      <div divid="<%= section.title %>" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%= section.text %></div>
+      <br>
+    <% }); %>
+  </form>
+  <hr><br>
+  <h4 id="new">New Section
+    <% if (currentUser) { %>
+      &nbsp;<a class="fas fa-angle-right text-info" id= "toggleButton" onclick="showNewSection();"></a>
+    <% }%>
+  </h4>
+  <div class="smaller-br"></div>
+  <% if (currentUser) { %> <!---CHECK FOR LEVEL TOO!--->
+    <form id="toggled-new-section" class="gone" action="/<%= article._id %>/new-section" method="post">
+      <input type="text" name="title" value="" class="form-control" id="newSectionTitle" placeholder="Section Title" required>
+      <div class="smaller-br"></div>
+      Section type: &nbsp; <input type="radio" name="type" value="text" onchange="editQuiz();"> Text &nbsp; <input type="radio" name="type" value="quiz" id="quizButton" onchange="editQuiz();"> Quiz &nbsp; <input type="radio" name="type" value="image" onchange="editQuiz();"> Image
+
+      <!-- FIGURE THIS OUT!!!!!  there will be a third type of section called "image" where you can upload an image. the placeholder for "section text" will be replaced with "caption". also add a note that shows when type=image is selected that says that image TITLES will NOT be displayed!-->
+
+      <div class="smaller-br"></div>
+      <textarea name="text" class="form-control" placeholder="Section text"></textarea><br>
+      <div class="quiz-editor gone">
+        <div class="questions-div">
+          <div class="quiz-question">
+            <p>Question #1:</p>
+            <input class="form-control questions-answers question" type="text" placeholder="Type your question here!" name="question0-question">
+            <br>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">1</span>
+              </div>
+              <input type="text" class="form-control questions-answers answer1" placeholder="Answer Choice #1" name="question0-answer1">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">2</span>
+              </div>
+              <input type="text" class="form-control questions-answers answer2" placeholder="Answer Choice #2" name="question0-answer2">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">3</span>
+              </div>
+              <input type="text" class="form-control questions-answers answer3" placeholder="Answer Choice #3" name="question0-answer3">
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">4</span>
+              </div>
+              <input type="text" class="form-control questions-answers answer4" placeholder="Answer Choice #4" name="question0-answer4">
+            </div>
+            <label for="correct">Correct answer: </label>&nbsp;
+            <input class="form-control d-inline small-input questions-answers" type="number" name="question0-correct" max="4" min="1" step="1">
+            <hr>
+          </div>
+        </div>
+        <button type="button" name="button" class="btn btn-outline-dark" onclick="addQuestion();">Add Question</button>
+        <br><br><br>
+      </div>
+      <input type="hidden" name="subject" value="<%= group.subject %>">
+      <input type="hidden" name="subject" value="<%= group.title %>">
+
+      <button type="submit" class="btn btn-info">Add section</button>
+    </form>
+  <% } else { %>
+    <button type="button" onclick="showProfile();" class="btn btn-outline-success btn-sm">Log in</button> to create a new section.
+  <% }%>
+  <br><br>
+  Last updated: DATE <br>
+  Contributors: (list)
+</div>
+
+<%- include('partials/footer'); -%>
+<script type="text/javascript">
+  //jshint esversion:6
+  function showNewSection(){
+    $("#toggled-new-section").toggle();
+    const button = $("#toggleButton");
+    if(button.hasClass("fa-angle-right")){
+      button.addClass("fa-angle-down");
+      button.removeClass("fa-angle-right");
+    } else {
+      button.removeClass("fa-angle-down");
+      button.addClass("fa-angle-right");
+    }
+  }
+  $("#newSectionTitle").keypress(function(){
+    setTimeout(function () {
+      $("h4").each(function(){
+        if ($(this).html().split(" &nbsp;")[0].toLowerCase() === $("#newSectionTitle").val().toLowerCase()) {
+          alert("Warning: This title is identical or very similar to an already existing section on this page!");
+        }
+      });
+    }, 2);
+  });
+
+  function addQuestion() {
+    if ($(".quiz-question").length < 10) {
+      $($(".quiz-question")[0]).clone().appendTo(".questions-div");
+      let thisQuestion = $($(".quiz-question")[$(".quiz-question").length-1]);
+      thisQuestion.children("p").html("Question #" +$(".quiz-question").length);
+      thisQuestion.children(".question").attr("name", "question" + ($(".quiz-question").length-1) + "-question").val("");
+      thisQuestion.children(".input-group").children(".answer1").attr("name", "question" + ($(".quiz-question").length-1) + "-answer1").val("");
+      thisQuestion.children(".input-group").children(".answer2").attr("name", "question" + ($(".quiz-question").length-1) + "-answer2").val("");
+      thisQuestion.children(".input-group").children(".answer3").attr("name", "question" + ($(".quiz-question").length-1) + "-answer3").val("");
+      thisQuestion.children(".input-group").children(".answer4").attr("name", "question" + ($(".quiz-question").length-1) + "-answer4").val("");
+      thisQuestion.children(".small-input").attr("name", "question" + ($(".quiz-question").length-1) + "-correct").val("");
+    } else {
+      alert("Max of 10 questions!");
+    }
+  }
+
+  function editQuiz(){
+    if ($("#quizButton").prop("checked") && $(".quiz-editor").hasClass("gone")) {
+      $(".quiz-editor").removeClass("gone");
+      $(".questions-answers").attr("required", "true");
+    } else if (!$(".quiz-editor").hasClass("gone")) {
+      $(".quiz-editor").addClass("gone");
+      $(".questions-answers").removeAttr("required");
+    }
+  }
+
+</script>

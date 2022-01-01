@@ -1,0 +1,108 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <form class="" action="/literature/<%= theBook.title %>/quizzes/new" method="post">
+    <% if (theBook.chapters.length === 0) {%>
+    <h2>"<%=theBook.title%>": New Quiz</h2>
+    <% } else { %>
+    <h2><u><%=theBook.title%></u>: New Quiz</h2>
+
+    <% }%>
+    <br>
+    <p>Quiz title:</p>
+    <input class="form-control" type="text" name="title" placeholder="Ex: Chapters 1-3 Reading Quiz" required>
+    <div class="smaller-br"></div>
+    *If the quiz is not related to <%= theBook.title %>, it may be taken down.
+    <div class="smaller-br"></div>
+    <hr><br>
+    <div class="questions-div">
+      <div class="quiz-question">
+        <p>Question #1:</p>
+        <input class="form-control questions-answers question" type="text" placeholder="Type your question here!" required name="question0-question">
+        <br>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">1</span>
+          </div>
+          <input type="text" class="form-control questions-answers answer1" placeholder="Answer Choice #1" required name="question0-answer1">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">2</span>
+          </div>
+          <input type="text" class="form-control questions-answers answer2" placeholder="Answer Choice #2" required name="question0-answer2">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">3</span>
+          </div>
+          <input type="text" class="form-control questions-answers answer3" placeholder="Answer Choice #3" required name="question0-answer3">
+        </div>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">4</span>
+          </div>
+          <input type="text" class="form-control questions-answers answer4" placeholder="Answer Choice #4" required name="question0-answer4">
+        </div>
+        <label for="correct">Correct answer: </label>&nbsp;
+        <input class="form-control d-inline small-input" type="number" name="question0-correct" max="4" min="1" step="1" required>
+        <div class="smaller-br"></div>
+        <hr><br>
+      </div>
+    </div>
+
+    <button type="button" name="button" class="btn btn-outline-dark" onclick="addQuestion();">Add Question</button>
+    <button type="submit" class="btn btn-info">Create Quiz</button>
+
+    <%- include('partials/footer'); -%>
+    <script type="text/javascript">
+      //jshint esversion:6
+
+
+
+      function addQuestion() {
+        if ($(".quiz-question").length < 20) {
+          $($(".quiz-question")[0]).clone().appendTo(".questions-div");
+          let thisQuestion = $($(".quiz-question")[$(".quiz-question").length-1]);
+          thisQuestion.children("p").html("Question #" +$(".quiz-question").length);
+          thisQuestion.children(".question").attr("name", "question" + ($(".quiz-question").length-1) + "-question").val("");
+          thisQuestion.children(".input-group").children(".answer1").attr("name", "question" + ($(".quiz-question").length-1) + "-answer1").val("");
+          thisQuestion.children(".input-group").children(".answer2").attr("name", "question" + ($(".quiz-question").length-1) + "-answer2").val("");
+          thisQuestion.children(".input-group").children(".answer3").attr("name", "question" + ($(".quiz-question").length-1) + "-answer3").val("");
+          thisQuestion.children(".input-group").children(".answer4").attr("name", "question" + ($(".quiz-question").length-1) + "-answer4").val("");
+          thisQuestion.children(".small-input").attr("name", "question" + ($(".quiz-question").length-1) + "-correct").val("");
+        } else {
+          alert("Max of 20 questions!");
+        }
+      }
+
+      // $(".questions-answers").keypress(function() {
+      //   updateValues($(this));
+      // });
+      //
+      // function updateValues (object){
+      //   setTimeout(function () {
+      //     if (object.hasClass("question")) {
+      //       for (let i = 0; i < $(".question").length; i++) {
+      //         const question = ($(".question")[i]);
+      //         if ($(question).attr("id") === object.attr("id")){
+      //           quizQuestions[i][0]= object.val();
+      //           console.log(quizQuestions);
+      //         }
+      //       }
+      //     } else {
+      //       const objectClass = object.attr("class");
+      //       console.log(object);
+      //       console.log(object.attr("class"));
+      //       let answerNumber = Number(objectClass[objectClass.length-1])-1;
+      //       for (let i = 0; i < $(".answer"+ (answerNumber+1)).length; i++) {
+      //         const answer = ($(".answer"+ (answerNumber+1))[i]);
+      //         if ($(answer).attr("id") == object.attr("id")){
+      //           quizQuestions[i][1][answerNumber]= object.val();
+      //           console.log(quizQuestions);
+      //         }
+      //       }
+      //     }
+      //   }, 5);
+      // }
+    </script>

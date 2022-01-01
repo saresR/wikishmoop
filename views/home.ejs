@@ -1,0 +1,32 @@
+<%- include('partials/header'); -%>
+<div class="padding">
+  <h1>Free Homework Help, Updated Daily! Run by students</h1>
+  <p>There needs to be an "ask a question" search, where they can search ALL q&a's</p>
+</div>
+<div class="padding container-fluid regular-shadow background-dark-blue text-light">
+  <h2 class="display-3">Ask a question <i class="fas fa-level-down-alt"></i></h2>
+  <div class="smaller-br"></div>
+  <form class="text-center" action="/ask" method="post">
+    <input type="text" name="question" value="" class="form-control form-control-lg" placeholder="Ex:">
+    <div class="smaller-br"></div>
+    <button type="submit" name="button" class="btn btn-info btn-lg padding-sides"><strong>Go</strong></button> <!-- add a *random* placeholder using EJS--->
+  </form><div class="smaller-br"></div>
+</div>
+<div class="padding text-right">
+  <h2 class="display-4"><b>Log in</b> to contribute!</h2>
+  <form class="" action="/login" method="post"><br>
+    <div class="inline-50-input">
+      <div class="form-group">
+        <input type="text" class="text-right invis-input inline-50-input" name="username" placeholder="Username">
+      </div>
+      <div class="smaller-br"></div>
+      <div class="form-group">
+        <input type="password" class="text-right invis-input inline-50-input" name="password" placeholder="Password"><br>
+      </div><br>
+    </div>
+
+    <button type="submit" class="btn btn-outline-dark" name="url" value="/">Continue</button>
+  </form><br>
+</div>
+
+<%- include('partials/footer'); -%>

@@ -1,0 +1,134 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+
+<% let prevPage; %>
+<% let nextPage; %>
+<% if (theBook.chapters.indexOf(chapter) ===0){ %>
+<%  prevPage = ""; %>
+<%  nextPage = theBook.chapters[1].title; %>
+<% } else if (theBook.chapters.indexOf(chapter) === (theBook.chapters.length-1)){ %>
+<%  prevPage = theBook.chapters[theBook.chapters.length-2].title; %>
+<%  nextPage = ""; %>
+<% } else { %>
+<%  prevPage = theBook.chapters[theBook.chapters.indexOf(chapter)-1].title; %>
+<%  nextPage = theBook.chapters[theBook.chapters.indexOf(chapter)+1].title; %>
+<% }%>
+<% %>
+<% %>
+
+<div class="padding">
+  <div class="position-relative">
+    <a href="/literature/<%= theBook.title %>/summaries/<%= prevPage %>" class="text-left absolute-left"><i class="fas fa-chevron-left"></i> &nbsp; previous page </a>
+    <a href="/literature/<%= theBook.title %>/summaries/<%= nextPage %>" class="text-right absolute-right">next page &nbsp; <i class="fas fa-chevron-right"></i></a>
+  </div>
+  <br>
+  <div class="smaller-br"></div>
+  <h2><a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a>: <%= chapter.title%> &nbsp;<a class="far fa-flag" onclick="flagForDeletion(['literature','<%= theBook.title %>', 'summaries', '<%= chapter.title %>'], '<%= url %>');" title="Flag for Deletion"></a></h2>
+  <br>
+  <form class="" action="/edit/literature/<%= theBook.title %>/summaries/<%= chapter.title %>" method="post">
+
+    <%- include('partials/text-editor'); -%>
+    Contents: &nbsp;&nbsp; <a href="#short">Short Summary</a> &nbsp;&nbsp; <a href="#translated" class="text-info">Simple English Translation</a> &nbsp;&nbsp; <a href="#what-we-get">What We Get Out of This</a> &nbsp;&nbsp; <a href="#to-note"
+      class="text-info">Things to Note</a>
+    <br>
+
+    <input type="hidden" name="shortSummary" value="<%= chapter.shortSummary%>">
+    <hr><br>
+    <h4 id="short">Short Summary &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4> <!----- ADD QUESTION MARK ALERT BUTTONS TO ALL OF THESE!!!!!!!!!!!!!! SO PEOPLE KNOW WHAT "SHORT SUMMARY", "WHAT WE GET", ETC. MEAN!!!! ----->
+    <div class="smaller-br"></div>
+    <div divid="shortSummary" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%= chapter.shortSummary %></div>
+    <br>
+
+    <input type="hidden" name="translation" value="<%= chapter.translation %>">
+    <hr><br>
+    <h4 id="translated">Simple English Translation &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <div class="smaller-br"></div>
+    <div divid="translation" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!" contenteditable="false"><%- chapter.translation %></div>
+    <br>
+
+    <input type="hidden" name="whatWeGet" value="<%= chapter.whatWeGet %>">
+    <hr><br>
+    <h4 id="what-we-get">What We Get Out of This &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <div class="smaller-br"></div>
+    <div divid="whatWeGet" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- chapter.whatWeGet %></div>
+    <br>
+
+    <input type="hidden" name="thingsToNote" value='<%= chapter.thingsToNote %>'>
+    <hr><br>
+    <h4 id="to-note">Things to Note &nbsp; <a class="fas fa-edit text-info" onclick="makeEditable();"></a></h4>
+    <div class="smaller-br"></div>
+    <div divid="thingsToNote" class="editable-text no-outline" placeholder="There is currently no published text here. Try writing it yourself!"><%- chapter.thingsToNote %></div>
+    <br>
+    <hr><br>
+  </form>
+
+  <form id="tags" action="/literature/<%= theBook.title %>/summaries/<%= chapter.title %>/tags" method="post">
+    <h4>Mentioned on this page... &nbsp; <a class="fas fa-edit text-info" onclick="editTags();"></a></h4>
+    <div class="smaller-br"></div>
+    <% if (chapter.characters && chapter.characters.length > 0){ %>
+    Characters:
+    <% chapter.characters.forEach(function(character){ %>
+    <button class="btn btn-sm btn-outline-info tag-btn margin-bottom" type="button" name="remove" value="characters.......<%= character %>"
+      onclick="window.location.href = '/literature/<%= theBook.title %>/characters#<%= character %>'"><%= character %> <i class="fas fa-times-circle tag-remover gone"></i></button>
+    <% }) %>
+    <br>
+    <div class="smaller-br"></div>
+    <% } %>
+
+    <% if (chapter.themes && chapter.themes.length > 0){ %>
+    Themes:
+    <% chapter.themes.forEach(function(theme){ %>
+    <button class="btn btn-sm btn-outline-info tag-btn margin-bottom" type="button" name="remove" value="themes.......<%= theme %>" onclick="window.location.href = '/literature/<%= theBook.title %>/themes#<%= theme %>'"><%= theme %> <i
+        class="fas fa-times-circle tag-remover gone"></i></button>
+    <% }) %>
+    <br>
+    <div class="smaller-br"></div>
+    <% } %>
+
+    <% if (chapter.symbols && chapter.symbols.length > 0){ %>
+    Symbols:
+    <% chapter.symbols.forEach(function(symbol){ %>
+    <button class="btn btn-sm btn-outline-info tag-btn margin-bottom" type="button" name="remove" value="symbols.......<%= symbol %>" onclick="window.location.href = '/literature/<%= theBook.title %>/symbols#<%= symbol %>'"><%= symbol %> <i
+        class="fas fa-times-circle tag-remover gone"></i></button>
+    <% }) %>
+    <br>
+    <div class="smaller-br"></div>
+    <% } %>
+    <div class="tag-editor gone">
+      <% let currentTags = chapter.characters.concat(chapter.themes); %> <%#  um... we need to somehow deal with the possibility of books without themes or something %>
+      <% currentTags = currentTags.concat(chapter.symbols); %>
+      <% if (theBook.sections.filter(section => {return section.title === "Characters";}).length > 0) { %>
+        <% var characters = theBook.sections.filter(section => {return section.title === "Characters";})[0].subpages; %>
+      <% } else { %>
+        <% var characters = []; %>
+      <% }%>
+      <% if (theBook.sections.filter(section => {return section.title === "Themes";}).length > 0) { %>
+        <% var themes = theBook.sections.filter(section => {return section.title === "Themes";})[0].subpages; %>
+      <% } else { %>
+        <% var themes = []; %>
+      <% }%>
+      <% if (theBook.sections.filter(section => {return section.title === "Symbols";}).length > 0) { %>
+        <% var symbols = theBook.sections.filter(section => {return section.title === "Symbols";})[0].subpages; %>
+      <% } else { %>
+        <% var symbols = []; %>
+      <% }%>
+      <% let possibleTagged = characters.concat(themes); %>
+      <% possibleTagged = possibleTagged.concat(symbols); %>
+      <% possibleTagged.forEach(function(possibleTag){ %>
+      <% if (!currentTags.includes(possibleTag.title)) { %>
+      <button class="btn btn-sm btn-outline-success margin-bottom" type="submit" name="add" value="<%= possibleTag.title %>"><%= possibleTag.title %> <i class="fas fa-plus-circle"></i></button>
+      <%} %>
+      <% })%> &nbsp;
+      <button type="button" class="btn btn-outline-dark btn-sm margin-bottom" onclick="location.reload();">Cancel</button>
+    </div>
+
+  </form>
+
+
+</div>
+
+<%= theBook.sections.filter(section => {return true}) %>
+
+we need to add "previous" and "next" buttons at the top and bottom
+
+<%- include('partials/footer'); -%>

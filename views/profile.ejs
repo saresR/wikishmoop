@@ -1,0 +1,60 @@
+<%- include('partials/header'); -%>
+<div class="padding">
+  <h1><%= user.username %></h1>
+  <%= user.score %> <!-- display level somehow -->&nbsp; • &nbsp; <%= user.pendingEdits.length %> recent edits
+  <% if (user.bio) { %>
+    <p><%= user.bio %></p>
+  <% }%><br>
+
+  <% if (user.username === currentUser.username) { %>
+    <p>Edit my profile and things</p>
+  <% } %>
+
+  <br>
+
+</div>
+<% let closedNotifications = false; %>
+
+<% if (user.username === currentUser.username) { %>
+  <div class="padding container-fluid regular-shadow" id= "notifications"> <!---link as #notifications --->
+    <h3>Notifications</h3> <!---- MAYBE make all of these sections collapsable so it's easy to see-->
+    <div class="smaller-br"></div>
+    <% if (user.notifications && user.notifications.length > 0 ) { %>
+      <% user.notifications.forEach(function(notification){ %>
+        <% if (!notification.closed) { %> <!--- add a "close" button-->
+          <div class="alert alert-light">
+            <a href="#"><%= notification.text %></a>
+          </div>
+        <% }  else { %>
+          <% closedNotifications = true; %>
+        <% }%>
+      <% }); %>
+      <% if (closedNotifications){ %>
+        <a onclick="showAll()">Show closed notifications</a>
+      <% } %>
+    <% } else { %>
+      You have no notifications. You will be notified when your edits get approved or ___????FFF
+    <% }%>
+  </div>
+
+<div class="padding">
+  <h3>My edits</h3>
+  <div class="smaller-br"></div>
+  <%= currentUser.pendingEdits %>
+</div>
+<% } %>
+
+<% if (currentUser.username ==="admin") { %>
+  new group hehe
+  <form class="" action="/new-group" method="post">
+    <input type="text" name="title" value="" placeholder="title">
+    <input type="text" name="description" value="" placeholder="description">
+    <input type="text" name="subject" value="" placeholder = "subject (capitalize)">
+    <button type="submit" name="button">submit</button>
+  </form>
+
+<%} %>
+
+
+
+<%- include('partials/footer'); -%>

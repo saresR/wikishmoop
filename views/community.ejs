@@ -1,0 +1,39 @@
+<%- include('partials/header'); -%>
+<% if (url.substring(0,12) === "/literature/"){ %>
+  <%- include('partials/lit-sidebar'); -%>
+<% } %>
+
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-md-6 big-half-div">
+      <a href="<%=url %>/q&a">
+        <div class="padding text-center big-half-div-box">
+          <div>
+            <img src="/images/qa.png" alt="Q & A" class="big-half-div-img">
+            <div class="smaller-br"></div>
+            <h1>Community Q&A</h1>
+            <p>Ask and answer questions about <%= topic %></p>
+          </div>
+
+        </div>
+      </a>
+    </div>
+
+    <div class="col-md-6 big-half-div">
+      <a href="<%=url %>/notes">
+        <div class="padding text-center big-half-div-box">
+          <div>
+            <h1>Shared Notes</h1>
+            <p>Upload and share your own notes!</p>
+            <div class="smaller-br"></div>
+            <img src="/images/notes.png" alt="Notes" class="big-half-div-img">
+          </div>
+        </div>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<%- include('partials/footer'); -%>

@@ -1,0 +1,46 @@
+<a onclick="showSidebar();">
+  <div class="position-fixed" id="sidebar-toggler">
+    <i class="fas fa-chevron-right"></i>
+  </div>
+</a>
+<div class="padding text-light sidebar-hidden" id="sidebar">
+  <div class="text-right">
+    <a onclick="hideSidebar();" class="text-light"><i class="fas fa-times"></i></a>
+  </div>
+  <h5><a class="text-light" href="/<%= group.subject %>/<%= group.title %>"><%= group.title %></a></h5>
+
+
+      <%group.sections.forEach(function(section){ %>
+          <br>
+          <a class="text-success" href="/<%= group.subject %>/<%= group.title %>/<%= section.articles[0].id %>"><strong><%= section.title %></strong></a><br>
+
+          <% section.articles.forEach(function(article) { %>
+              <a class="text-light margin-left d-block text-smaller" href="/<%= group.subject %>/<%= group.title %>/<%= article.id %>"><%= article.title %></a>
+          <% }); %>
+
+          <% if (currentUser) { %>
+            <div class="smaller-br"></div>
+            <a class="text-light margin-left d-block text-smaller" href="/<%= group.subject %>/<%= group.title %>/<%= section.title %>/new-article"><i class="fas fa-plus-circle"></i> New</a>
+          <% } %>
+      <% }); %>
+      <br>
+      <a class="text-success" href="/<%= group.subject %>/<%= group.title %>/community"><strong>Community</strong></a><br>
+      <a class="text-light margin-left d-block text-smaller" href="/<%= group.subject %>/<%= group.title %>/community/q&a">Q&A</a> <!---- WE MAY CHANGE THIS!!!  (share notes, maybe?) -->
+      <a class="text-light margin-left d-block text-smaller" href="/<%= group.subject %>/<%= group.title %>/community/notes">Community Notes</a><br>
+      <% if (currentUser) { %>
+      <a class="text-success" href="/<%= group.subject %>/<%= group.title %>/new-section"><strong>New Section</strong></a><br><br>
+      <% } %>
+<br>
+<button type="button" name="button" class="btn btn-sm btn-outline-light" onclick="hideSidebar();">Close Sidebar &nbsp;<i class="fas fa-times"></i></button>
+<br><br><br><br>
+</div>
+<script type="text/javascript">
+  function showSidebar() {
+    document.getElementById("sidebar").classList.remove("sidebar-hidden");
+    document.getElementById("sidebar").classList.add("sidebar-shown");
+  }
+  function hideSidebar(){
+    document.getElementById("sidebar").classList.add("sidebar-hidden");
+    document.getElementById("sidebar").classList.remove("sidebar-shown");
+  }
+</script>

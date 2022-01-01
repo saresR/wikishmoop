@@ -1,0 +1,23 @@
+<%- include('partials/header'); -%>
+<div class="padding">
+  <h1>Detailed Study Guides for Books, Plays, and More!</h1>
+  <!-- cards will be customized for users, not customized for non-users - use js -->
+  <br>
+  <h2>All literature</h2>
+  <ul>
+    <% books.sort((a, b) => (a.title > b.title) ? 1 : -1).forEach(function(book){ %>
+      <li><a href="/literature/<%= book.title %>"><%=book.title %></a></li>
+    <% }); %>
+  </ul>
+
+  <% if (currentUser && currentUser.score > 1000) { %>
+    <a href="/literature-new">+ add book</a>
+  <% } else if (currentUser){ %>
+    You cannot add books yet. <b>Level up</b> or <b><a href="/contact" class="text-primary">contact us directly</a></b> to add books
+  <% } else { %>
+    <a onclick="showProfile();" class="text-primary">Log in</a> to add books
+  <% }%>
+
+</div>
+
+<%- include('partials/footer'); -%>

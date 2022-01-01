@@ -1,0 +1,109 @@
+<%- include('partials/header'); -%>
+
+<div class="padding">
+  <h2>New article</h2>
+  <div class="smaller-br"></div>
+  <form class="text-left" action="/new-article" method="post" id="form">
+    <div class="form-group">
+      <h4>Subject(s)</h4>
+      <div class="form-check">
+        <input type="checkbox" name="subject" value="English" onchange="check('English');">&nbsp;
+        <label for="subject" class="p-size no-margin">English</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" name="subject" value="Math" onchange="check('Math');">&nbsp;
+        <label for="subject" class="p-size no-margin">Math</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" name="subject" value="Science"  onchange="check('Science');">&nbsp;
+        <label for="subject" class="p-size no-margin">Science</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" name="subject" value="History" onchange="check('History');">&nbsp;
+        <label for="subject" class="p-size no-margin">History</label>
+      </div>
+      <div class="form-check">
+        <input type="checkbox" name="subject" value="Other" onchange="check('Other');">&nbsp;
+        <label for="subject" class="p-size no-margin">Other</label>
+      </div>
+    </div>
+    <div class="smaller-br"></div>
+  <div class="form-group">
+    <h4>Article name</h4>
+    <input class="form-control" type="text" name="title" id="title" required>
+    <div class="smaller-br"></div>
+    <label for="title">
+      Already existing articles:
+      <% articles.forEach(function(article){ %>
+        <span class="article-name"><%= article %></span>,
+      <%}); %>
+    </label>
+    <!-- YOU CANNOT HAVE AN ARTICLE WITHOUT A GROUP!!!!!!!!!!!!!!!!!!!!!!! -->
+  </div>
+  <div class="smaller-br"></div>
+  <div class="form-group">
+    <h4>In which group(s) would you like to put this article? (required)</h4>
+    <% groups.forEach(function(group){ %>
+      <button type="button" name="group" class="btn btn-outline-dark gone <%= group.subject %>-button group-button"><%= group.title %></button>
+    <% }); %>
+    **If this article does not fit into any of these groups, <a href="/new-group">CREATE</a> a new group, or <a href="/contact">CONTACT</a> us to have the group created.
+    <!-- random idea: you can REQUEST a group to be created if you are not at the level yet -->
+  </div>
+  <div class="smaller-br"></div>
+  <button type="button" onclick="confirmSubmit();" class="btn btn-info">Submit</button>
+
+  </form>
+</div>
+
+<%- include('partials/footer'); -%>
+
+<script type="text/javascript">
+  function check() {// wait actually we need to check which ones are checked
+    ["English", "Math", "Science", "History", "Other"].forEach(function(subject){
+      $(".group-button").each(function(){
+        if ($(this).hasClass(subject + "-button") && $(this).hasClass("gone")) {
+          $(this).removeClass("gone"); // please bug check to see if this actually works
+        }
+        //BELOW is for if the subject is NOT checked
+        //if ($(this).hasClass(subject + "-button") && !($(this).hasClass("gone"))) {
+          //$(this).addClass("gone");
+        //}
+      });
+    });
+  }
+
+  $("group-button").click(function(){
+    if ($(this).hasClass("active")){
+      $(this).removeClass("active");
+      $("input[value='"+ $(this).html() +"']").remove();
+      // remove the child
+    } else {
+      $(this).addClass("active");
+      $("#form").append("<input type='hidden' name='group' value='" + $(this).html() + "'>");
+      // in teh form, ADD CHILD - add hidden input with "group" as name and this as value
+    }
+  });
+
+  function confirmSubmit(){
+    let done = false;
+    $(".article-name").each(function(){
+      if ($(this).html().toLowerCase() === $("#title").val().toLowerCase()){
+        alert("A article with the same name already exists!");
+        done = true;
+        return false;
+      }
+      if (!($("input[name='subject']:checked")) || !($(".active"))) { //IF there is not active group OR no checked checkbox
+        alert("Please fill out all fields!");
+        done = true;
+        return false;
+      }
+    });
+    setTimeout(function () {
+      if (done === false) {
+        console.log("hey");
+        $("#form").submit();
+      }
+    }, 10);
+  }
+
+</script>

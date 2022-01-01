@@ -1,0 +1,191 @@
+
+
+<form class="gone" action="/flag" method="post"> <!--- the secret form!!! --->
+  <input type="text" name="flagReason" value="">
+  <input type="text" name="flagLocation" value="">
+  <input type="submit" name="flagCurrentUrl" value="" id="flagSubmit">
+</form>
+
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+<script type="text/javascript">
+  //jshint esversion:6
+  function showProfile() {
+    document.getElementById("profile").classList.remove("profile-hidden");
+    document.getElementById("profile").classList.add("profile-shown");
+  }
+
+  function hideProfile() {
+    document.getElementById("profile").classList.add("profile-hidden");
+    document.getElementById("profile").classList.remove("profile-shown");
+  }
+  // var textareas = ;
+  // console.log(textareas);
+
+// for (var i = 0; i < $('.editable-text').length; i++) {
+//   let text = $('.editable-text')[i];
+//   text.addEventListener('keydown', autosize);
+//   text.style.cssText = 'height:auto; padding:0';
+//   text.style.cssText = 'height:' + text.scrollHeight + 'px';
+// }
+
+// $(window).resize(function(){
+//   for (var i = 0; i < $('.editable-text').length; i++) {
+//     let text = $('.editable-text')[i];
+//     text.addEventListener('keydown', autosize);
+//     text.style.cssText = 'height:auto; padding:0';
+//     text.style.cssText = 'height:' + text.scrollHeight + 'px';
+//   }
+// });
+//
+//
+// function autosize(){
+//   var el = this;
+//   setTimeout(function(){
+//     el.style.cssText = 'height:auto; padding:0';
+//     // for box-sizing other than "content-box" use:
+//     // el.style.cssText = '-moz-box-sizing:content-box';
+//     el.style.cssText = 'height:' + el.scrollHeight + 'px';
+//   },0);
+// }
+
+
+function makeEditable(){
+  let loggedIn = <%= Boolean(currentUser) %>;
+  if (loggedIn) {
+    $(".editable-text").attr("contenteditable", "true");
+    $(".editable-text").removeClass("no-outline");
+    $(".done-editing").removeClass("gone");
+    $(".editing-only").removeClass("gone");
+    $(".editable-text").each(function(){
+      if ($(this).html() === "There is currently no published text here. Try writing it yourself!"){
+        $(this).html("");
+      }
+    });
+    $(".editable-text")[0].focus();
+  } else {
+    showProfile();
+  }
+}
+
+// bold, underline, italic, strikeThrough,    Ins
+
+//document.execCommand("InsertOrderedList", false,"newOL");
+//document.execCommand("InsertUnorderedList", false,"newUL");
+
+// undo, redo, subscript, superscript
+
+function changeFormatting(newFormat, extraParam){
+  if (extraParam){
+    document.execCommand(newFormat, false, extraParam);
+  } else {
+    document.execCommand(newFormat, false);
+  }
+  setTimeout(function () {
+    $(".editable-text").each(function(){
+      $('input[name="' + ($(this).attr("divid")) +'"]').val($(this).html());
+    });
+  }, 1);
+}
+
+
+
+
+
+initialize();
+
+function initialize(){
+  if ($(".editable-text") && $(".editable-text").length >0) {
+    $(".editable-text").each(function(){
+      if ($(this).html() === ""){
+        $(this).html("There is currently no published text here. Try writing it yourself!");
+      }
+    });
+  }
+}
+
+$(".editable-text").keydown(function(){
+  setTimeout(function () {
+    $(".editable-text").each(function(){
+      $('input[name="' + ($(this).attr("divid")) +'"]').val($(this).html());
+    });
+  }, 1);
+});
+
+$(".editable-text").click(function(){
+  setTimeout(function () {
+    $(".editable-text").each(function(){
+      $('input[name="' + ($(this).attr("divid")) +'"]').val($(this).html());
+    });
+  }, 1);
+});
+
+
+
+
+function editTags() {
+  let loggedIn = <%= Boolean(currentUser) %>;
+  if (loggedIn) {
+    $(".tag-btn").removeAttr("onclick");
+    $(".tag-btn").attr("type", "submit");
+    $(".tag-btn").addClass("wiggle");
+    $(".tag-remover").removeClass("gone");
+    $(".tag-editor").removeClass("gone");
+  } else {
+    showProfile();
+  }
+}
+
+//This is for the quizzes!
+$(".quiz-answer").click(function(){
+  if ($(this).hasClass("correct-answer")){
+    alert("Correct!");
+  } else {
+    alert("Incorrect - try again!");
+  }
+});
+
+$("a.far").hover(function(){
+  $(this).addClass("fas");
+}).mouseleave(function(){
+  $(this).removeClass("fas");
+});
+
+function flagForDeletion(location, currentUrl){
+  let loggedIn = <%= Boolean(currentUser) %>;
+  if (loggedIn) {
+    if (confirm("Are you sure you want to report this? All reported sections will be reviewed and deleted if necessary.")) {
+      const reason = prompt("Please state the reason why you think this should be taken down:");
+      if (reason) {
+        $("input[name='flagReason']").val(reason);
+        $("input[name='flagLocation']").val(location.join('.............6c73vc8degey88ww273t2738gi83ig829du3g80chwjs8cwu..........'));
+        $("input[name='flagCurrentUrl']").val(currentUrl);
+        $("#flagSubmit").click();
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+    //.splice(0,1)
+  } else {
+    showProfile();
+  }
+}
+
+
+//window.history.back();
+
+</script>
+
+<% if (error) { %>
+  <script type="text/javascript">
+    alert("<%=error%>");
+  </script>
+<% }%>
+</body>
+
+</html>

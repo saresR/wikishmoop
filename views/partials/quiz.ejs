@@ -1,0 +1,24 @@
+<h4 id="<%= quiz.title %>"><%= quiz.title %></h4>
+<span>Created by <a href="/user/<%= quiz.createdBy %>"><%= quiz.createdBy %></a></span><br><br>
+<div class="row">
+  <% quiz.questions.forEach(function(question){ %>
+    <br>
+    <div class="col-md-6">
+      <div class="card margin-bottom">
+        <div class="card-header">
+          <span class="text-medium"><%= question.question %></span>
+        </div>
+        <ul class="list-group list-group-flush">
+        <% question.answers.forEach(function(answer){ %>
+          <% if (question.correct === (1+ question.answers.indexOf(answer))) { %>
+            <li class="list-group-item correct-answer quiz-answer"><%= answer %></li>
+          <% } else { %>
+            <li class="list-group-item wrong-answer quiz-answer"><%= answer %></li>
+          <% } %>
+        <% }) %>
+        </ul>
+      </div>
+    </div>
+  <% }); %>
+</div>
+<br><hr><br>

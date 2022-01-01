@@ -1,0 +1,37 @@
+<%- include('partials/header'); -%>
+<%- include('partials/lit-sidebar'); -%>
+<div class="padding">
+  <h2><a href="/literature/<%= theBook.title %>" class="text-dark"><u><%=theBook.title%></u></a>: Quizzes</h2>
+  <br>
+  <h4>All Quizzes</h4>
+
+  <% if (theBook.quizzes) { %>
+    <div class="row container-fluid">
+      <% theBook.quizzes.forEach(function(quiz){ %>
+        <div class="col-sm-6 col-md-4 margin-bottom">
+          <a href="#<%= quiz.title %>"><%= quiz.title %></a>
+        </div>
+        <% }); %>
+    </div>
+
+  <% } else {%>
+    No quizzes yet.
+  <% } %>
+  <br><hr><br>
+  <% if (theBook.quizzes) { %>
+    <% theBook.quizzes.forEach(function(quiz){ %>
+      <%- include('partials/quiz', {quiz: quiz}); -%>
+    <% }); %>
+  <% } %>
+  <% if (currentUser){ %>
+    <h4>Add a new quiz &nbsp;<a href="/literature/<%=theBook.title%>/quizzes/new" class="text-success"><i class="fas fa-plus-circle"></i></a></h4>
+  <% } %>
+
+</div>
+
+
+
+
+
+
+<%- include('partials/footer'); -%>
